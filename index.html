@@ -1,0 +1,2156 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UtilityX — All-in-One Tools</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root[data-theme="dark"] {
+    --bg: #0d0d0f;
+    --bg2: #13131a;
+    --bg3: #1a1a24;
+    --card: #16161f;
+    --border: #2a2a3a;
+    --accent: #7c6af5;
+    --accent2: #f56a6a;
+    --accent3: #6af5c0;
+    --text: #f0eeff;
+    --text2: #9b97b8;
+    --text3: #5c5878;
+    --input-bg: #0d0d0f;
+    --shadow: rgba(124,106,245,0.15);
+    --history-bg: #1a1a24;
+    --btn-text: #fff;
+  }
+  :root[data-theme="light"] {
+    --bg: #f2f0eb;
+    --bg2: #ece9e2;
+    --bg3: #e4e0d8;
+    --card: #f7f5f0;
+    --border: #d4cfc4;
+    --accent: #5b4de0;
+    --accent2: #d94f4f;
+    --accent3: #1a9e6f;
+    --text: #1a1830;
+    --text2: #5a5670;
+    --text3: #9b97b8;
+    --input-bg: #ece9e2;
+    --shadow: rgba(91,77,224,0.1);
+    --history-bg: #e8e4db;
+    --btn-text: #fff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Mono', monospace;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* page bg sits behind cards */
+  .page-bg {
+    background: var(--bg);
+    min-height: calc(100vh - 110px);
+  }
+
+  /* ── HEADER ── */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 32px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    cursor: default;
+    user-select: none;
+  }
+  .logo-capsule {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--bg) 0%, var(--card) 100%);
+    border-radius: 14px;
+    padding: 6px 14px;
+    height: 42px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 12px var(--shadow);
+    transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+  }
+  .logo-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+  .logo-wordmark {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    font-size: 1.05rem;
+    letter-spacing: -0.5px;
+    color: var(--text);
+    line-height: 1;
+    transition: color 0.3s;
+  }
+  .logo-wordmark span {
+    color: var(--accent);
+  }
+  .header-right { display: flex; align-items: center; gap: 14px; }
+
+  /* Theme toggle */
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text2);
+    transition: all 0.2s;
+  }
+  .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+  .theme-icon { font-size: 1rem; }
+
+  /* History badge */
+  .history-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text2);
+    transition: all 0.2s;
+    position: relative;
+  }
+  .history-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+  .hist-count {
+    background: var(--accent2);
+    color: #fff;
+    border-radius: 50px;
+    font-size: 0.65rem;
+    padding: 1px 6px;
+    margin-left: 5px;
+  }
+
+  /* ── NAV TABS ── */
+  .nav-outer {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 53px;
+    z-index: 99;
+  }
+  .nav-wrap {
+    overflow-x: auto;
+    scrollbar-width: none;
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    cursor: ew-resize;
+    user-select: none;
+  }
+  .nav-wrap::-webkit-scrollbar { display: none; }
+  .nav-fade-left, .nav-fade-right {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 48px;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .nav-fade-left  { left: 0;  background: linear-gradient(to right, var(--bg2), transparent); }
+  .nav-fade-right { right: 0; background: linear-gradient(to left,  var(--bg2), transparent); }
+  .nav-tabs {
+    display: flex;
+    padding: 0 16px;
+    gap: 2px;
+    min-width: max-content;
+  }
+  .tab-btn {
+    padding: 12px 20px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .tab-btn:hover { color: var(--text2); }
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .tab-icon { font-size: 1rem; }
+
+  /* ── MAIN LAYOUT ── */
+  .main-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 28px 24px;
+    display: grid;
+    grid-template-columns: 1fr 270px;
+    gap: 20px;
+    align-items: start;
+  }
+
+  .tool-area {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 28px;
+    min-height: 480px;
+  }
+
+  /* ── HISTORY PANEL ── */
+  .history-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px 18px;
+    position: sticky;
+    top: 100px;
+  }
+  .history-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text3);
+    margin-bottom: 16px;
+  }
+  .history-empty {
+    color: var(--text3);
+    font-size: 0.75rem;
+    text-align: center;
+    margin-top: 40px;
+    line-height: 1.8;
+  }
+  .hist-item {
+    background: var(--history-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    animation: slideIn 0.3s ease;
+  }
+  .hist-item:hover { border-color: var(--accent); }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: none; } }
+  .hist-tool {
+    font-size: 0.65rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .hist-input { font-size: 0.72rem; color: var(--text2); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hist-result { font-size: 0.85rem; color: var(--text); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hist-time { font-size: 0.62rem; color: var(--text3); margin-top: 4px; }
+  .clear-hist {
+    width: 100%;
+    padding: 8px;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.2s;
+  }
+  .clear-hist:hover { border-color: var(--accent2); color: var(--accent2); }
+
+  /* ── TOOL PANELS ── */
+  .tool-panel { display: none; }
+  .tool-panel.active { display: block; }
+
+  .tool-header {
+    margin-bottom: 28px;
+  }
+  .tool-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+  .tool-desc { color: var(--text2); font-size: 0.8rem; margin-top: 6px; }
+
+  /* Input / Output */
+  .row { display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+  input[type="text"], input[type="number"], select, textarea {
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+  select option { background: var(--bg2); }
+
+  .btn {
+    padding: 12px 22px;
+    border-radius: 10px;
+    border: none;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+  .btn-secondary { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger { background: var(--accent2); color: #fff; }
+  .btn-danger:hover { opacity: 0.85; }
+  .btn-sm { padding: 8px 14px; font-size: 0.75rem; }
+
+  .result-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 16px;
+    font-size: 1.1rem;
+    color: var(--text);
+    min-height: 60px;
+    position: relative;
+    word-break: break-all;
+  }
+  .result-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text3);
+    margin-bottom: 8px;
+  }
+  .result-value {
+    font-size: 1.3rem;
+    color: var(--accent);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    word-break: break-all;
+  }
+  .copy-btn {
+    position: absolute;
+    top: 12px; right: 12px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.7rem;
+    color: var(--text2);
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    transition: all 0.2s;
+  }
+  .copy-btn:hover { border-color: var(--accent3); color: var(--accent3); }
+
+  /* ── CALCULATOR ── */
+  .calc-display {
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 24px;
+    text-align: right;
+    margin-bottom: 16px;
+  }
+  .calc-expr { font-size: 0.85rem; color: var(--text2); min-height: 20px; }
+  .calc-val { font-size: 2.2rem; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+  .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .calc-btn {
+    padding: 16px 8px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg3);
+    color: var(--text);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .calc-btn:hover { border-color: var(--accent); color: var(--accent); transform: scale(1.04); }
+  .calc-btn:active { transform: scale(0.96); }
+  .calc-btn.op { color: var(--accent); }
+  .calc-btn.eq { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .calc-btn.eq:hover { opacity: 0.85; transform: scale(1.04); }
+  .calc-btn.clear { color: var(--accent2); }
+  .calc-btn.span2 { grid-column: span 2; }
+
+  /* ── SCIENTIFIC CALC ── */
+  .sci-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .sci-btn {
+    padding: 12px 6px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg3);
+    color: var(--text2);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .sci-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .sci-btn.num { color: var(--text); }
+  .sci-btn.eq { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .sci-btn.op { color: var(--accent); }
+  .sci-btn.fn { color: var(--accent3); }
+
+  /* ── UNIT CONVERTER ── */
+  .converter-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: end; }
+  .conv-arrow { font-size: 1.5rem; text-align: center; color: var(--text3); padding-bottom: 12px; }
+  .field-label { font-size: 0.7rem; color: var(--text3); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* ── PASSWORD GEN ── */
+  .pass-options { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+  .checkbox-wrap { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--text2); cursor: pointer; }
+  .checkbox-wrap input[type="checkbox"] { accent-color: var(--accent); width: 15px; height: 15px; }
+  .pass-result {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    word-break: break-all;
+    color: var(--accent3);
+    font-family: 'DM Mono', monospace;
+    position: relative;
+    min-height: 60px;
+  }
+  .strength-bar { height: 4px; border-radius: 4px; margin-top: 10px; transition: all 0.3s; }
+
+  /* ── BASE CONVERTER ── */
+  .base-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .base-chip {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.65rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text3);
+    margin-right: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .base-chip:hover, .base-chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* ── COLOR CONVERTER ── */
+  .color-preview {
+    width: 100%;
+    height: 80px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+    transition: background 0.3s;
+  }
+  .color-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+  .color-label { font-size: 0.7rem; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; min-width: 45px; }
+
+  /* ── BMI CALC ── */
+  .bmi-meter {
+    height: 12px;
+    border-radius: 6px;
+    background: linear-gradient(to right, #5bc8f5, #6af5c0, #f5e26a, #f5a06a, #f56a6a);
+    position: relative;
+    margin: 16px 0;
+    overflow: visible;
+  }
+  .bmi-pointer {
+    position: absolute;
+    top: -8px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 3px solid var(--text);
+    transform: translateX(-50%);
+    transition: left 0.5s ease;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.55rem; color: var(--text); font-weight: 700;
+  }
+
+  /* ── STOPWATCH ── */
+  .stopwatch-display {
+    text-align: center;
+    padding: 32px;
+    background: var(--bg3);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+  .sw-time {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -1px;
+  }
+  .sw-ms { font-size: 1.8rem; color: var(--text2); }
+  .sw-btns { display: flex; gap: 10px; justify-content: center; }
+  .laps-list { max-height: 180px; overflow-y: auto; margin-top: 16px; }
+  .lap-item { display: flex; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid var(--border); font-size: 0.8rem; color: var(--text2); }
+  .lap-item:last-child { border-bottom: none; }
+
+  /* ── TEXT TOOLS ── */
+  .text-tools-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+  .text-tool-btn {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg3);
+    color: var(--text2);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .text-tool-btn:hover { border-color: var(--accent3); color: var(--accent3); }
+  .text-stats { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+  .stat-chip { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; font-size: 0.75rem; color: var(--text2); }
+  .stat-chip strong { color: var(--accent); font-size: 1.1rem; display: block; }
+
+  /* ── AGE CALC ── */
+  .age-result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+  .age-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; }
+  .age-card .val { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 2rem; font-weight: 800; color: var(--accent); }
+  .age-card .lbl { font-size: 0.7rem; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .main-wrapper { grid-template-columns: 1fr; padding: 16px; }
+    .history-panel { position: static; }
+    .tool-area { padding: 18px; }
+    header { padding: 14px 20px; }
+    .logo { font-size: 1.2rem; }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* Notification toast */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(60px);
+    background: var(--accent3);
+    color: #0d1a14;
+    padding: 10px 22px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 999;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  /* ── CODE SECTION ── */
+  .code-section {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    padding: 40px 0 48px;
+    margin-top: 8px;
+  }
+  .code-section-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .code-section-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .code-section-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+  .code-section-desc {
+    font-size: 0.75rem;
+    color: var(--text3);
+    margin-top: 4px;
+  }
+  .code-lang-tabs {
+    display: flex;
+    gap: 6px;
+  }
+  .clang-btn {
+    padding: 7px 18px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg3);
+    color: var(--text2);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .clang-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .clang-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .code-tool-tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .ctool-btn {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .ctool-btn:hover { color: var(--text2); border-color: var(--text3); }
+  .ctool-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(124,106,245,0.08); }
+
+  .code-block-wrap {
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    background: #0a0a0d;
+  }
+  :root[data-theme="light"] .code-block-wrap { background: #1a1a24; }
+  .code-block-topbar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid var(--border);
+  }
+  .dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  .dot.r { background: #f56a6a; }
+  .dot.y { background: #f5c76a; }
+  .dot.g { background: #6af5c0; }
+  .code-filename {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: #6b6b8a;
+    margin-left: 6px;
+    flex: 1;
+  }
+  .code-copy-btn {
+    background: none;
+    border: 1px solid #2a2a3a;
+    border-radius: 6px;
+    color: #6b6b8a;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    padding: 3px 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .code-copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .code-pre {
+    margin: 0;
+    padding: 24px;
+    overflow-x: auto;
+    max-height: 380px;
+    overflow-y: auto;
+  }
+  .code-pre code {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.75;
+    color: #c9c7e8;
+    display: block;
+    white-space: pre;
+  }
+  /* Syntax highlight classes */
+  .kw  { color: #7c6af5; }   /* keywords */
+  .fn  { color: #6af5c0; }   /* functions */
+  .st  { color: #f5c76a; }   /* strings */
+  .cm  { color: #4a4a6a; font-style: italic; } /* comments */
+  .nm  { color: #f5a06a; }   /* numbers */
+  .tp  { color: #f56a9a; }   /* types */
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+      <div class="logo">
+    <div class="logo-capsule">
+      <svg class="logo-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="3" width="26" height="26" rx="6" stroke="var(--accent)" stroke-width="2.5" fill="none"/>
+        <path d="M10 13l4 6 8-10" stroke="var(--accent3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="logo-wordmark">Utility<span>X</span></span>
+    </div>
+  </div>
+  <div class="header-right">
+    <button class="history-btn">⏱ History <span class="hist-count" id="histCount">0</span></button>
+    <button class="theme-toggle" onclick="toggleTheme()">
+      <span class="theme-icon" id="themeIcon">☀️</span>
+      <span id="themeLabel">Light</span>
+    </button>
+  </div>
+</header>
+
+<!-- NAV TABS -->
+<div class="nav-outer">
+<div class="nav-wrap" id="navWrap">
+  <div class="nav-fade-left"></div>
+  <div class="nav-fade-right"></div>
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('calc')" id="tab-calc"><span class="tab-icon">🔢</span>Calculator</button>
+    <button class="tab-btn" onclick="switchTab('sci')" id="tab-sci"><span class="tab-icon">🔬</span>Scientific</button>
+    <button class="tab-btn" onclick="switchTab('unit')" id="tab-unit"><span class="tab-icon">📏</span>Unit Converter</button>
+    <button class="tab-btn" onclick="switchTab('pass')" id="tab-pass"><span class="tab-icon">🔐</span>Password Gen</button>
+    <button class="tab-btn" onclick="switchTab('base')" id="tab-base"><span class="tab-icon">💻</span>Base Converter</button>
+    <button class="tab-btn" onclick="switchTab('color')" id="tab-color"><span class="tab-icon">🎨</span>Color</button>
+    <button class="tab-btn" onclick="switchTab('bmi')" id="tab-bmi"><span class="tab-icon">⚖️</span>BMI</button>
+    <button class="tab-btn" onclick="switchTab('sw')" id="tab-sw"><span class="tab-icon">⏱</span>Stopwatch</button>
+    <button class="tab-btn" onclick="switchTab('text')" id="tab-text"><span class="tab-icon">📝</span>Text Tools</button>
+    <button class="tab-btn" onclick="switchTab('age')" id="tab-age"><span class="tab-icon">🎂</span>Age Calc</button>
+  </div>
+</div>
+</div>
+
+<!-- MAIN -->
+<div class="page-bg">
+<div class="main-wrapper">
+  <div class="tool-area">
+
+    <!-- ===== MINI CALCULATOR ===== -->
+    <div class="tool-panel active" id="panel-calc">
+      <div class="tool-header">
+        <div class="tool-title">🔢 Calculator</div>
+        <div class="tool-desc">Fast arithmetic with keyboard support</div>
+      </div>
+      <div class="calc-display">
+        <div class="calc-expr" id="calcExpr"></div>
+        <div class="calc-val" id="calcVal">0</div>
+      </div>
+      <div class="calc-grid">
+        <button class="calc-btn clear" onclick="calcClear()">C</button>
+        <button class="calc-btn op" onclick="calcInput('(')">(</button>
+        <button class="calc-btn op" onclick="calcInput(')')">)</button>
+        <button class="calc-btn op" onclick="calcInput('/')">÷</button>
+        <button class="calc-btn num" onclick="calcInput('7')">7</button>
+        <button class="calc-btn num" onclick="calcInput('8')">8</button>
+        <button class="calc-btn num" onclick="calcInput('9')">9</button>
+        <button class="calc-btn op" onclick="calcInput('*')">×</button>
+        <button class="calc-btn num" onclick="calcInput('4')">4</button>
+        <button class="calc-btn num" onclick="calcInput('5')">5</button>
+        <button class="calc-btn num" onclick="calcInput('6')">6</button>
+        <button class="calc-btn op" onclick="calcInput('-')">−</button>
+        <button class="calc-btn num" onclick="calcInput('1')">1</button>
+        <button class="calc-btn num" onclick="calcInput('2')">2</button>
+        <button class="calc-btn num" onclick="calcInput('3')">3</button>
+        <button class="calc-btn op" onclick="calcInput('+')">+</button>
+        <button class="calc-btn num" onclick="calcInput('0')">0</button>
+        <button class="calc-btn num" onclick="calcInput('.')">.</button>
+        <button class="calc-btn op" onclick="calcBackspace()">⌫</button>
+        <button class="calc-btn eq" onclick="calcEquals()">=</button>
+      </div>
+    </div>
+
+    <!-- ===== SCIENTIFIC CALCULATOR ===== -->
+    <div class="tool-panel" id="panel-sci">
+      <div class="tool-header">
+        <div class="tool-title">🔬 Scientific Calculator</div>
+        <div class="tool-desc">Trigonometry, logarithms, powers & more</div>
+      </div>
+      <div class="calc-display">
+        <div class="calc-expr" id="sciExpr"></div>
+        <div class="calc-val" id="sciVal">0</div>
+      </div>
+      <div style="margin-bottom:10px;">
+        <label class="checkbox-wrap" style="display:inline-flex;">
+          <input type="checkbox" id="degMode" checked> DEG
+        </label>
+        &nbsp;
+        <button class="base-chip" onclick="sciInput('Math.PI')">π</button>
+        <button class="base-chip" onclick="sciInput('Math.E')">e</button>
+      </div>
+      <div class="sci-grid">
+        <button class="sci-btn fn" onclick="sciFunc('sin')">sin</button>
+        <button class="sci-btn fn" onclick="sciFunc('cos')">cos</button>
+        <button class="sci-btn fn" onclick="sciFunc('tan')">tan</button>
+        <button class="sci-btn fn" onclick="sciFunc('log')">log</button>
+        <button class="sci-btn fn" onclick="sciFunc('ln')">ln</button>
+        <button class="sci-btn fn" onclick="sciFunc('sqrt')">√</button>
+        <button class="sci-btn fn" onclick="sciInput('**2')">x²</button>
+        <button class="sci-btn fn" onclick="sciInput('**')">xⁿ</button>
+        <button class="sci-btn fn" onclick="sciFunc('abs')">|x|</button>
+        <button class="sci-btn fn" onclick="sciInput('!')">n!</button>
+        <button class="sci-btn op" onclick="sciInput('(')">(</button>
+        <button class="sci-btn op" onclick="sciInput(')')">)</button>
+        <button class="sci-btn op" onclick="sciInput('%')">%</button>
+        <button class="sci-btn clear" style="color:var(--accent2)" onclick="sciClear()">C</button>
+        <button class="sci-btn op" onclick="sciBackspace()">⌫</button>
+        <button class="sci-btn num" onclick="sciInput('7')">7</button>
+        <button class="sci-btn num" onclick="sciInput('8')">8</button>
+        <button class="sci-btn num" onclick="sciInput('9')">9</button>
+        <button class="sci-btn op" onclick="sciInput('/')">÷</button>
+        <button class="sci-btn op" onclick="sciInput('*')">×</button>
+        <button class="sci-btn num" onclick="sciInput('4')">4</button>
+        <button class="sci-btn num" onclick="sciInput('5')">5</button>
+        <button class="sci-btn num" onclick="sciInput('6')">6</button>
+        <button class="sci-btn op" onclick="sciInput('-')">−</button>
+        <button class="sci-btn op" onclick="sciInput('+')">+</button>
+        <button class="sci-btn num" onclick="sciInput('1')">1</button>
+        <button class="sci-btn num" onclick="sciInput('2')">2</button>
+        <button class="sci-btn num" onclick="sciInput('3')">3</button>
+        <button class="sci-btn num" onclick="sciInput('0')">0</button>
+        <button class="sci-btn eq" onclick="sciEquals()">=</button>
+      </div>
+    </div>
+
+    <!-- ===== UNIT CONVERTER ===== -->
+    <div class="tool-panel" id="panel-unit">
+      <div class="tool-header">
+        <div class="tool-title">📏 Unit Converter</div>
+        <div class="tool-desc">Length, Weight, Temperature, Volume & more</div>
+      </div>
+      <div class="row">
+        <div style="flex:1">
+          <div class="field-label">Category</div>
+          <select id="unitCategory" onchange="updateUnitOptions()">
+            <option value="length">Length</option>
+            <option value="weight">Weight</option>
+            <option value="temp">Temperature</option>
+            <option value="volume">Volume</option>
+            <option value="speed">Speed</option>
+            <option value="area">Area</option>
+            <option value="data">Data Storage</option>
+          </select>
+        </div>
+      </div>
+      <div class="converter-grid">
+        <div>
+          <div class="field-label">From</div>
+          <select id="fromUnit"></select>
+        </div>
+        <div class="conv-arrow">⇌</div>
+        <div>
+          <div class="field-label">To</div>
+          <select id="toUnit"></select>
+        </div>
+      </div>
+      <div class="row" style="margin-top:12px;">
+        <input type="number" id="unitInput" placeholder="Enter value..." style="flex:2">
+        <button class="btn btn-primary" onclick="convertUnit()">Convert</button>
+        <button class="btn btn-secondary" onclick="swapUnits()">⇄ Swap</button>
+      </div>
+      <div class="result-box" id="unitResult" style="display:none">
+        <div class="result-label">Result</div>
+        <div class="result-value" id="unitResultVal"></div>
+        <button class="copy-btn" onclick="copyResult('unitResultVal')">Copy</button>
+      </div>
+    </div>
+
+    <!-- ===== PASSWORD GENERATOR ===== -->
+    <div class="tool-panel" id="panel-pass">
+      <div class="tool-header">
+        <div class="tool-title">🔐 Password Generator</div>
+        <div class="tool-desc">Generate strong, secure passwords</div>
+      </div>
+      <div class="row">
+        <div style="flex:1">
+          <div class="field-label">Length: <span id="passLenLabel">16</span></div>
+          <input type="range" id="passLen" min="4" max="64" value="16" oninput="document.getElementById('passLenLabel').textContent=this.value" style="padding:0;background:none;border:none;width:100%;cursor:pointer;accent-color:var(--accent)">
+        </div>
+      </div>
+      <div class="pass-options">
+        <label class="checkbox-wrap"><input type="checkbox" id="passUpper" checked> Uppercase (A-Z)</label>
+        <label class="checkbox-wrap"><input type="checkbox" id="passLower" checked> Lowercase (a-z)</label>
+        <label class="checkbox-wrap"><input type="checkbox" id="passNum" checked> Numbers (0-9)</label>
+        <label class="checkbox-wrap"><input type="checkbox" id="passSym"> Symbols (!@#$)</label>
+      </div>
+      <div class="row">
+        <input type="number" id="passCount" value="1" min="1" max="10" style="width:100px" placeholder="Count">
+        <button class="btn btn-primary" onclick="generatePass()">Generate</button>
+        <button class="btn btn-secondary btn-sm" onclick="copyResult('passOutput')">Copy</button>
+      </div>
+      <div class="pass-result" id="passOutput" style="min-height:70px;font-size:0.95rem;letter-spacing:1px;">Click Generate...</div>
+      <div class="strength-bar" id="strengthBar"></div>
+      <div style="font-size:0.72rem;color:var(--text3);margin-top:4px;" id="strengthLabel"></div>
+    </div>
+
+    <!-- ===== BASE CONVERTER ===== -->
+    <div class="tool-panel" id="panel-base">
+      <div class="tool-header">
+        <div class="tool-title">💻 Base Converter</div>
+        <div class="tool-desc">Convert between Binary, Octal, Decimal & Hex</div>
+      </div>
+      <div class="row">
+        <div style="flex:1">
+          <div class="field-label">Input Base</div>
+          <div style="margin-bottom:10px;">
+            <button class="base-chip active" id="base-chip-2" onclick="setBaseFrom(2)">BIN</button>
+            <button class="base-chip" id="base-chip-8" onclick="setBaseFrom(8)">OCT</button>
+            <button class="base-chip" id="base-chip-10" onclick="setBaseFrom(10)">DEC</button>
+            <button class="base-chip" id="base-chip-16" onclick="setBaseFrom(16)">HEX</button>
+          </div>
+          <input type="text" id="baseInput" placeholder="Enter value..." oninput="convertBase()">
+        </div>
+      </div>
+      <div class="base-grid" style="margin-top:14px;">
+        <div class="result-box">
+          <div class="result-label">Binary (Base 2)</div>
+          <div class="result-value" id="baseBin" style="font-size:1rem;">—</div>
+          <button class="copy-btn" onclick="copyResult('baseBin')">Copy</button>
+        </div>
+        <div class="result-box">
+          <div class="result-label">Octal (Base 8)</div>
+          <div class="result-value" id="baseOct" style="font-size:1rem;">—</div>
+          <button class="copy-btn" onclick="copyResult('baseOct')">Copy</button>
+        </div>
+        <div class="result-box">
+          <div class="result-label">Decimal (Base 10)</div>
+          <div class="result-value" id="baseDec" style="font-size:1rem;">—</div>
+          <button class="copy-btn" onclick="copyResult('baseDec')">Copy</button>
+        </div>
+        <div class="result-box">
+          <div class="result-label">Hexadecimal (Base 16)</div>
+          <div class="result-value" id="baseHex" style="font-size:1rem;">—</div>
+          <button class="copy-btn" onclick="copyResult('baseHex')">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== COLOR CONVERTER ===== -->
+    <div class="tool-panel" id="panel-color">
+      <div class="tool-header">
+        <div class="tool-title">🎨 Color Converter</div>
+        <div class="tool-desc">Convert between HEX, RGB, HSL & CSS names</div>
+      </div>
+      <div class="color-preview" id="colorPreview" style="background:#7c6af5"></div>
+      <div class="color-row">
+        <div class="color-label">HEX</div>
+        <input type="text" id="hexInput" value="#7c6af5" placeholder="#RRGGBB" oninput="fromHex()" style="flex:1">
+        <input type="color" id="colorPicker" value="#7c6af5" oninput="fromPicker()" style="width:42px;height:42px;padding:2px;border-radius:8px;cursor:pointer;background:var(--bg3)">
+      </div>
+      <div class="color-row">
+        <div class="color-label">RGB</div>
+        <input type="number" id="rVal" min="0" max="255" value="124" placeholder="R" oninput="fromRGB()" style="flex:1">
+        <input type="number" id="gVal" min="0" max="255" value="106" placeholder="G" oninput="fromRGB()" style="flex:1">
+        <input type="number" id="bVal" min="0" max="255" value="245" placeholder="B" oninput="fromRGB()" style="flex:1">
+      </div>
+      <div class="color-row">
+        <div class="color-label">HSL</div>
+        <input type="number" id="hVal" min="0" max="360" value="248" placeholder="H" oninput="fromHSL()" style="flex:1">
+        <input type="number" id="sVal" min="0" max="100" value="87" placeholder="S%" oninput="fromHSL()" style="flex:1">
+        <input type="number" id="lVal" min="0" max="100" value="69" placeholder="L%" oninput="fromHSL()" style="flex:1">
+      </div>
+      <div class="result-box" style="margin-top:12px">
+        <div class="result-label">CSS Value</div>
+        <div class="result-value" id="cssOutput" style="font-size:1rem">rgb(124, 106, 245)</div>
+        <button class="copy-btn" onclick="copyResult('cssOutput')">Copy</button>
+      </div>
+    </div>
+
+    <!-- ===== BMI CALCULATOR ===== -->
+    <div class="tool-panel" id="panel-bmi">
+      <div class="tool-header">
+        <div class="tool-title">⚖️ BMI Calculator</div>
+        <div class="tool-desc">Body Mass Index with health classification</div>
+      </div>
+      <div class="row">
+        <div style="flex:1">
+          <div class="field-label">Unit System</div>
+          <select id="bmiUnit" onchange="updateBMILabels()">
+            <option value="metric">Metric (kg/cm)</option>
+            <option value="imperial">Imperial (lbs/in)</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div style="flex:1">
+          <div class="field-label" id="weightLabel">Weight (kg)</div>
+          <input type="number" id="bmiWeight" placeholder="Enter weight...">
+        </div>
+        <div style="flex:1">
+          <div class="field-label" id="heightLabel">Height (cm)</div>
+          <input type="number" id="bmiHeight" placeholder="Enter height...">
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="calcBMI()">Calculate BMI</button>
+      <div id="bmiResult" style="display:none;margin-top:16px">
+        <div class="bmi-meter">
+          <div class="bmi-pointer" id="bmiPointer"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.65rem;color:var(--text3);margin-bottom:12px;">
+          <span>Underweight</span><span>Normal</span><span>Overweight</span><span>Obese</span>
+        </div>
+        <div class="result-box">
+          <div class="result-label">Your BMI</div>
+          <div class="result-value" id="bmiValue"></div>
+          <div style="margin-top:8px;font-size:0.85rem;color:var(--text2)" id="bmiCategory"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== STOPWATCH ===== -->
+    <div class="tool-panel" id="panel-sw">
+      <div class="tool-header">
+        <div class="tool-title">⏱ Stopwatch</div>
+        <div class="tool-desc">Precision timer with lap tracking</div>
+      </div>
+      <div class="stopwatch-display">
+        <div class="sw-time"><span id="swH">00</span>:<span id="swM">00</span>:<span id="swS">00</span><span class="sw-ms">.<span id="swMs">00</span></span></div>
+      </div>
+      <div class="sw-btns">
+        <button class="btn btn-primary" id="swStartBtn" onclick="swStart()">▶ Start</button>
+        <button class="btn btn-secondary" onclick="swLap()" id="swLapBtn" disabled>Lap</button>
+        <button class="btn btn-danger" onclick="swReset()">↺ Reset</button>
+      </div>
+      <div class="laps-list" id="lapsList"></div>
+    </div>
+
+    <!-- ===== TEXT TOOLS ===== -->
+    <div class="tool-panel" id="panel-text">
+      <div class="tool-header">
+        <div class="tool-title">📝 Text Tools</div>
+        <div class="tool-desc">Transform, analyze & count text</div>
+      </div>
+      <textarea id="textInput" rows="6" placeholder="Paste or type your text here..." oninput="analyzeText()"></textarea>
+      <div class="text-tools-grid" style="margin-top:12px">
+        <button class="text-tool-btn" onclick="textTransform('upper')">UPPERCASE</button>
+        <button class="text-tool-btn" onclick="textTransform('lower')">lowercase</button>
+        <button class="text-tool-btn" onclick="textTransform('title')">Title Case</button>
+        <button class="text-tool-btn" onclick="textTransform('camel')">camelCase</button>
+        <button class="text-tool-btn" onclick="textTransform('snake')">snake_case</button>
+        <button class="text-tool-btn" onclick="textTransform('kebab')">kebab-case</button>
+        <button class="text-tool-btn" onclick="textTransform('reverse')">Reverse</button>
+        <button class="text-tool-btn" onclick="textTransform('trim')">Trim Spaces</button>
+        <button class="text-tool-btn" onclick="copyResult('textInput')">Copy All</button>
+      </div>
+      <div class="text-stats" id="textStats">
+        <div class="stat-chip"><strong id="statChars">0</strong>Chars</div>
+        <div class="stat-chip"><strong id="statWords">0</strong>Words</div>
+        <div class="stat-chip"><strong id="statLines">0</strong>Lines</div>
+        <div class="stat-chip"><strong id="statSentences">0</strong>Sentences</div>
+        <div class="stat-chip"><strong id="statRead">0</strong>Min read</div>
+      </div>
+    </div>
+
+    <!-- ===== AGE CALCULATOR ===== -->
+    <div class="tool-panel" id="panel-age">
+      <div class="tool-header">
+        <div class="tool-title">🎂 Age Calculator</div>
+        <div class="tool-desc">Calculate exact age and upcoming birthday</div>
+      </div>
+      <div class="row">
+        <div style="flex:1">
+          <div class="field-label">Date of Birth</div>
+          <input type="date" id="dobInput" style="width:100%">
+        </div>
+        <div style="flex:1">
+          <div class="field-label">As of Date</div>
+          <input type="date" id="asofInput" style="width:100%">
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="calcAge()">Calculate Age</button>
+      <div id="ageResult" style="display:none">
+        <div class="age-result-grid">
+          <div class="age-card"><div class="val" id="ageYears">0</div><div class="lbl">Years</div></div>
+          <div class="age-card"><div class="val" id="ageMonths">0</div><div class="lbl">Months</div></div>
+          <div class="age-card"><div class="val" id="ageDays">0</div><div class="lbl">Days</div></div>
+        </div>
+        <div class="result-box" style="margin-top:12px">
+          <div class="result-label">Additional Info</div>
+          <div style="font-size:0.85rem;color:var(--text2);line-height:1.8" id="ageExtra"></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end tool-area -->
+
+  <!-- HISTORY PANEL -->
+  <div class="history-panel" id="historyPanel">
+    <div class="history-title">Recent (Last 3)</div>
+    <div id="historyList"><div class="history-empty">No calculations yet.<br>Results will appear here.</div></div>
+    <button class="clear-hist" onclick="clearHistory()">Clear History</button>
+  </div>
+
+</div><!-- end main-wrapper -->
+</div><!-- end page-bg -->
+
+<!-- CODE BLOCK SECTION -->
+<div class="code-section">
+  <div class="code-section-inner">
+    <div class="code-section-header">
+      <div>
+        <div class="code-section-title">Backend Implementation</div>
+        <div class="code-section-desc">Example source code powering each tool — C++ & Python</div>
+      </div>
+      <div class="code-lang-tabs">
+        <button class="clang-btn active" onclick="switchLang('cpp')" id="clang-cpp">C++</button>
+        <button class="clang-btn" onclick="switchLang('py')" id="clang-py">Python</button>
+      </div>
+    </div>
+
+    <div class="code-tool-tabs">
+      <button class="ctool-btn active" onclick="switchCode('calc')"    id="ct-calc">Calculator</button>
+      <button class="ctool-btn" onclick="switchCode('sci')"     id="ct-sci">Scientific</button>
+      <button class="ctool-btn" onclick="switchCode('unit')"    id="ct-unit">Unit Conv</button>
+      <button class="ctool-btn" onclick="switchCode('pass')"    id="ct-pass">Password</button>
+      <button class="ctool-btn" onclick="switchCode('base')"    id="ct-base">Base Conv</button>
+      <button class="ctool-btn" onclick="switchCode('bmi')"     id="ct-bmi">BMI</button>
+      <button class="ctool-btn" onclick="switchCode('age')"     id="ct-age">Age Calc</button>
+    </div>
+
+    <div class="code-block-wrap">
+      <div class="code-block-topbar">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="code-filename" id="codeFilename">calculator.cpp</span>
+        <button class="code-copy-btn" onclick="copyCode()">Copy</button>
+      </div>
+      <pre class="code-pre" id="codeBlock"><code id="codeContent"></code></pre>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Copied!</div>
+
+<script>
+// ─────────────────────────────────────────────
+// THEME
+// ─────────────────────────────────────────────
+let isDark = true;
+function toggleTheme() {
+  isDark = !isDark;
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
+  document.getElementById('themeLabel').textContent = isDark ? 'Light' : 'Dark';
+}
+
+// ─────────────────────────────────────────────
+// TABS
+// ─────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+// ─────────────────────────────────────────────
+// HISTORY (last 3)
+// ─────────────────────────────────────────────
+let history = [];
+function addHistory(tool, input, result) {
+  history.unshift({ tool, input, result, time: new Date().toLocaleTimeString() });
+  if (history.length > 3) history = history.slice(0, 3);
+  renderHistory();
+}
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  document.getElementById('histCount').textContent = history.length;
+  if (!history.length) { list.innerHTML = '<div class="history-empty">No calculations yet.<br>Results will appear here.</div>'; return; }
+  list.innerHTML = history.map(h => `
+    <div class="hist-item">
+      <div class="hist-tool">${h.tool}</div>
+      <div class="hist-input">${h.input}</div>
+      <div class="hist-result">= ${h.result}</div>
+      <div class="hist-time">${h.time}</div>
+    </div>`).join('');
+}
+function clearHistory() { history = []; renderHistory(); }
+function toggleHistPanel() {
+  const p = document.getElementById('historyPanel');
+  p.style.display = p.style.display === 'none' ? '' : 'none';
+}
+
+// ─────────────────────────────────────────────
+// COPY & TOAST
+// ─────────────────────────────────────────────
+function copyResult(id) {
+  const el = document.getElementById(id);
+  navigator.clipboard.writeText(el.textContent || el.value || '').catch(()=>{});
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+// ─────────────────────────────────────────────
+// MINI CALCULATOR
+// ─────────────────────────────────────────────
+let calcExpr = '';
+function calcInput(v) {
+  const opMap = { '*': '×', '/': '÷' };
+  calcExpr += v;
+  document.getElementById('calcExpr').textContent = calcExpr.replace(/\*/g,'×').replace(/\//g,'÷');
+  document.getElementById('calcVal').textContent = calcExpr.replace(/[^0-9.+\-*/()]/g,'') || '0';
+}
+function calcClear() { calcExpr = ''; document.getElementById('calcExpr').textContent=''; document.getElementById('calcVal').textContent='0'; }
+function calcBackspace() { calcExpr = calcExpr.slice(0,-1); document.getElementById('calcExpr').textContent = calcExpr.replace(/\*/g,'×').replace(/\//g,'÷'); }
+function calcEquals() {
+  try {
+    const res = Function('"use strict";return (' + calcExpr + ')')();
+    const rounded = +parseFloat(res).toPrecision(12);
+    addHistory('Calculator', calcExpr.replace(/\*/g,'×').replace(/\//g,'÷'), rounded);
+    document.getElementById('calcVal').textContent = rounded;
+    document.getElementById('calcExpr').textContent = calcExpr.replace(/\*/g,'×').replace(/\//g,'÷') + ' =';
+    calcExpr = String(rounded);
+  } catch(e) { document.getElementById('calcVal').textContent = 'Error'; }
+}
+document.addEventListener('keydown', e => {
+  if (document.getElementById('panel-calc').classList.contains('active')) {
+    if ('0123456789.+-*/()'.includes(e.key)) calcInput(e.key);
+    if (e.key === 'Enter' || e.key === '=') calcEquals();
+    if (e.key === 'Backspace') calcBackspace();
+    if (e.key === 'Escape') calcClear();
+  }
+});
+
+// ─────────────────────────────────────────────
+// SCIENTIFIC CALCULATOR
+// ─────────────────────────────────────────────
+let sciExpr = '';
+function sciInput(v) {
+  sciExpr += v;
+  document.getElementById('sciExpr').textContent = sciExpr;
+  document.getElementById('sciVal').textContent = sciExpr || '0';
+}
+function sciFunc(fn) {
+  const funcs = { sin:'Math.sin', cos:'Math.cos', tan:'Math.tan', log:'Math.log10', ln:'Math.log', sqrt:'Math.sqrt', abs:'Math.abs' };
+  sciExpr += funcs[fn] + '(';
+  document.getElementById('sciExpr').textContent = sciExpr;
+}
+function sciClear() { sciExpr = ''; document.getElementById('sciExpr').textContent=''; document.getElementById('sciVal').textContent='0'; }
+function sciBackspace() { sciExpr = sciExpr.slice(0,-1); document.getElementById('sciExpr').textContent = sciExpr; }
+function factorial(n) { if(n<=1) return 1; return n * factorial(n-1); }
+function sciEquals() {
+  try {
+    let expr = sciExpr;
+    const deg = document.getElementById('degMode').checked;
+    if (deg) {
+      expr = expr.replace(/Math\.sin\(/g,'Math.sin(Math.PI/180*')
+                 .replace(/Math\.cos\(/g,'Math.cos(Math.PI/180*')
+                 .replace(/Math\.tan\(/g,'Math.tan(Math.PI/180*');
+    }
+    // Handle factorial
+    expr = expr.replace(/(\d+)!/g, (m,n) => factorial(parseInt(n)));
+    const res = Function('"use strict";return (' + expr + ')')();
+    const rounded = +parseFloat(res).toPrecision(10);
+    addHistory('Scientific', sciExpr, rounded);
+    document.getElementById('sciVal').textContent = rounded;
+    document.getElementById('sciExpr').textContent = sciExpr + ' =';
+    sciExpr = String(rounded);
+  } catch(e) { document.getElementById('sciVal').textContent = 'Error'; }
+}
+
+// ─────────────────────────────────────────────
+// UNIT CONVERTER
+// ─────────────────────────────────────────────
+const unitData = {
+  length: { units: ['Meter','Kilometer','Centimeter','Millimeter','Mile','Yard','Foot','Inch'],
+    toBase: [1,1000,0.01,0.001,1609.34,0.9144,0.3048,0.0254] },
+  weight: { units: ['Kilogram','Gram','Milligram','Pound','Ounce','Ton'],
+    toBase: [1,0.001,0.000001,0.453592,0.0283495,1000] },
+  volume: { units: ['Liter','Milliliter','Gallon (US)','Quart','Pint','Cup','Fluid Oz'],
+    toBase: [1,0.001,3.78541,0.946353,0.473176,0.236588,0.0295735] },
+  speed: { units: ['m/s','km/h','mph','knot','ft/s'],
+    toBase: [1,0.277778,0.44704,0.514444,0.3048] },
+  area: { units: ['m²','km²','cm²','hectare','acre','ft²','in²'],
+    toBase: [1,1e6,0.0001,10000,4046.86,0.092903,0.00064516] },
+  data: { units: ['Byte','Kilobyte','Megabyte','Gigabyte','Terabyte','Bit'],
+    toBase: [1,1024,1048576,1073741824,1099511627776,0.125] }
+};
+function updateUnitOptions() {
+  const cat = document.getElementById('unitCategory').value;
+  const from = document.getElementById('fromUnit');
+  const to = document.getElementById('toUnit');
+  if (cat === 'temp') {
+    const opts = ['Celsius','Fahrenheit','Kelvin'];
+    from.innerHTML = opts.map(o=>`<option>${o}</option>`).join('');
+    to.innerHTML = opts.map(o=>`<option>${o}</option>`).join('');
+    to.value = 'Fahrenheit';
+  } else {
+    const units = unitData[cat].units;
+    from.innerHTML = units.map(u=>`<option>${u}</option>`).join('');
+    to.innerHTML = units.map(u=>`<option>${u}</option>`).join('');
+    to.selectedIndex = 1;
+  }
+}
+function swapUnits() {
+  const f = document.getElementById('fromUnit'), t = document.getElementById('toUnit');
+  [f.value, t.value] = [t.value, f.value];
+}
+function convertUnit() {
+  const cat = document.getElementById('unitCategory').value;
+  const val = parseFloat(document.getElementById('unitInput').value);
+  const from = document.getElementById('fromUnit').value;
+  const to = document.getElementById('toUnit').value;
+  if (isNaN(val)) return;
+  let result;
+  if (cat === 'temp') {
+    let celsius;
+    if (from === 'Celsius') celsius = val;
+    else if (from === 'Fahrenheit') celsius = (val-32)*5/9;
+    else celsius = val - 273.15;
+    if (to === 'Celsius') result = celsius;
+    else if (to === 'Fahrenheit') result = celsius*9/5+32;
+    else result = celsius + 273.15;
+  } else {
+    const d = unitData[cat];
+    const fi = d.units.indexOf(from), ti = d.units.indexOf(to);
+    result = val * d.toBase[fi] / d.toBase[ti];
+  }
+  const rounded = +parseFloat(result).toPrecision(8);
+  document.getElementById('unitResult').style.display = 'block';
+  document.getElementById('unitResultVal').textContent = `${rounded} ${to}`;
+  addHistory('Unit Converter', `${val} ${from}`, `${rounded} ${to}`);
+}
+updateUnitOptions();
+
+// ─────────────────────────────────────────────
+// PASSWORD GENERATOR
+// ─────────────────────────────────────────────
+function generatePass() {
+  const len = parseInt(document.getElementById('passLen').value);
+  const count = parseInt(document.getElementById('passCount').value) || 1;
+  const upper = document.getElementById('passUpper').checked;
+  const lower = document.getElementById('passLower').checked;
+  const num = document.getElementById('passNum').checked;
+  const sym = document.getElementById('passSym').checked;
+  let chars = '';
+  if (upper) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  if (lower) chars += 'abcdefghijklmnopqrstuvwxyz';
+  if (num)   chars += '0123456789';
+  if (sym)   chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+  if (!chars) { document.getElementById('passOutput').textContent = 'Select at least one option!'; return; }
+  const passes = [];
+  for (let c=0; c<Math.min(count,10); c++) {
+    let pass = '';
+    for (let i=0; i<len; i++) pass += chars[Math.floor(Math.random()*chars.length)];
+    passes.push(pass);
+  }
+  document.getElementById('passOutput').textContent = passes.join('\n');
+  // Strength
+  let strength = 0;
+  if (len >= 12) strength++; if (len >= 20) strength++;
+  if (upper && lower) strength++; if (num) strength++; if (sym) strength++;
+  const colors = ['#f56a6a','#f5a06a','#f5e26a','#6af5c0','#6af5c0'];
+  const labels = ['Very Weak','Weak','Fair','Strong','Very Strong'];
+  document.getElementById('strengthBar').style.background = colors[Math.min(strength,4)];
+  document.getElementById('strengthBar').style.width = ((strength+1)/5*100)+'%';
+  document.getElementById('strengthLabel').textContent = labels[Math.min(strength,4)];
+  addHistory('Password Gen', `len=${len} ${[upper?'A':'',lower?'a':'',num?'0':'',sym?'#':''].filter(Boolean).join('')}`, passes[0].slice(0,12)+'...');
+}
+
+// ─────────────────────────────────────────────
+// BASE CONVERTER
+// ─────────────────────────────────────────────
+let fromBase = 2;
+function setBaseFrom(b) {
+  fromBase = b;
+  document.querySelectorAll('[id^="base-chip-"]').forEach(el => el.classList.remove('active'));
+  document.getElementById('base-chip-'+b).classList.add('active');
+  convertBase();
+}
+function convertBase() {
+  const val = document.getElementById('baseInput').value.trim();
+  if (!val) { ['baseBin','baseOct','baseDec','baseHex'].forEach(id => document.getElementById(id).textContent='—'); return; }
+  try {
+    const dec = parseInt(val, fromBase);
+    if (isNaN(dec)) throw new Error();
+    document.getElementById('baseBin').textContent = dec.toString(2);
+    document.getElementById('baseOct').textContent = dec.toString(8);
+    document.getElementById('baseDec').textContent = dec.toString(10);
+    document.getElementById('baseHex').textContent = dec.toString(16).toUpperCase();
+    addHistory('Base Converter', `${val} (base ${fromBase})`, `DEC: ${dec}`);
+  } catch(e) {
+    ['baseBin','baseOct','baseDec','baseHex'].forEach(id => document.getElementById(id).textContent='Invalid');
+  }
+}
+
+// ─────────────────────────────────────────────
+// COLOR CONVERTER
+// ─────────────────────────────────────────────
+function fromHex() {
+  let hex = document.getElementById('hexInput').value;
+  if (!hex.startsWith('#')) hex = '#'+hex;
+  if (hex.length === 7) {
+    const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    setRGB(r,g,b);
+  }
+}
+function fromPicker() {
+  const hex = document.getElementById('colorPicker').value;
+  document.getElementById('hexInput').value = hex;
+  fromHex();
+}
+function fromRGB() {
+  const r = parseInt(document.getElementById('rVal').value)||0;
+  const g = parseInt(document.getElementById('gVal').value)||0;
+  const b = parseInt(document.getElementById('bVal').value)||0;
+  const hex = '#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
+  document.getElementById('hexInput').value = hex;
+  document.getElementById('colorPicker').value = hex;
+  document.getElementById('colorPreview').style.background = hex;
+  const hsl = rgbToHsl(r,g,b);
+  document.getElementById('hVal').value = Math.round(hsl[0]);
+  document.getElementById('sVal').value = Math.round(hsl[1]);
+  document.getElementById('lVal').value = Math.round(hsl[2]);
+  document.getElementById('cssOutput').textContent = `rgb(${r}, ${g}, ${b})`;
+  addHistory('Color', hex, `rgb(${r},${g},${b})`);
+}
+function fromHSL() {
+  const h = parseInt(document.getElementById('hVal').value)||0;
+  const s = parseInt(document.getElementById('sVal').value)||0;
+  const l = parseInt(document.getElementById('lVal').value)||0;
+  const rgb = hslToRgb(h,s,l);
+  document.getElementById('rVal').value = rgb[0];
+  document.getElementById('gVal').value = rgb[1];
+  document.getElementById('bVal').value = rgb[2];
+  fromRGB();
+}
+function setRGB(r,g,b) {
+  document.getElementById('rVal').value = r;
+  document.getElementById('gVal').value = g;
+  document.getElementById('bVal').value = b;
+  fromRGB();
+}
+function rgbToHsl(r,g,b) {
+  r/=255;g/=255;b/=255;
+  const max=Math.max(r,g,b),min=Math.min(r,g,b);
+  let h,s,l=(max+min)/2;
+  if(max===min){h=s=0;}
+  else{const d=max-min;s=l>0.5?d/(2-max-min):d/(max+min);
+    switch(max){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;default:h=(r-g)/d+4;}h/=6;}
+  return [h*360,s*100,l*100];
+}
+function hslToRgb(h,s,l) {
+  s/=100;l/=100;
+  const c=(1-Math.abs(2*l-1))*s,x=c*(1-Math.abs((h/60)%2-1)),m=l-c/2;
+  let r=0,g=0,b=0;
+  if(h<60){r=c;g=x;}else if(h<120){r=x;g=c;}else if(h<180){g=c;b=x;}
+  else if(h<240){g=x;b=c;}else if(h<300){r=x;b=c;}else{r=c;b=x;}
+  return [Math.round((r+m)*255),Math.round((g+m)*255),Math.round((b+m)*255)];
+}
+
+// ─────────────────────────────────────────────
+// BMI CALCULATOR
+// ─────────────────────────────────────────────
+function updateBMILabels() {
+  const imp = document.getElementById('bmiUnit').value === 'imperial';
+  document.getElementById('weightLabel').textContent = imp ? 'Weight (lbs)' : 'Weight (kg)';
+  document.getElementById('heightLabel').textContent = imp ? 'Height (inches)' : 'Height (cm)';
+}
+function calcBMI() {
+  const unit = document.getElementById('bmiUnit').value;
+  let w = parseFloat(document.getElementById('bmiWeight').value);
+  let h = parseFloat(document.getElementById('bmiHeight').value);
+  if (isNaN(w)||isNaN(h)) return;
+  let bmi;
+  if (unit === 'metric') bmi = w / ((h/100)**2);
+  else bmi = (w / (h**2)) * 703;
+  bmi = +bmi.toFixed(1);
+  let cat, color;
+  if(bmi<18.5){cat='Underweight';color='#5bc8f5';}
+  else if(bmi<25){cat='Normal weight ✓';color='#6af5c0';}
+  else if(bmi<30){cat='Overweight';color='#f5e26a';}
+  else{cat='Obese';color='#f56a6a';}
+  const pct = Math.min(Math.max((bmi-10)/35,0),1)*100;
+  document.getElementById('bmiResult').style.display='block';
+  document.getElementById('bmiPointer').style.left = pct+'%';
+  document.getElementById('bmiValue').textContent = bmi;
+  document.getElementById('bmiValue').style.color = color;
+  document.getElementById('bmiCategory').textContent = cat;
+  addHistory('BMI', `${w}${unit==='metric'?'kg':'lbs'} / ${h}${unit==='metric'?'cm':'in'}`, `${bmi} - ${cat}`);
+}
+
+// ─────────────────────────────────────────────
+// STOPWATCH
+// ─────────────────────────────────────────────
+let swInterval, swStart2, swElapsed=0, swRunning=false, laps=[];
+function swStart() {
+  if (!swRunning) {
+    swStart2 = Date.now() - swElapsed;
+    swInterval = setInterval(swTick, 10);
+    swRunning = true;
+    document.getElementById('swStartBtn').textContent = '⏸ Pause';
+    document.getElementById('swLapBtn').disabled = false;
+  } else {
+    clearInterval(swInterval);
+    swElapsed = Date.now() - swStart2;
+    swRunning = false;
+    document.getElementById('swStartBtn').textContent = '▶ Resume';
+  }
+}
+function swTick() {
+  const t = Date.now() - swStart2;
+  const ms = Math.floor((t%1000)/10).toString().padStart(2,'0');
+  const s = Math.floor(t/1000%60).toString().padStart(2,'0');
+  const m = Math.floor(t/60000%60).toString().padStart(2,'0');
+  const h = Math.floor(t/3600000).toString().padStart(2,'0');
+  document.getElementById('swH').textContent=h;
+  document.getElementById('swM').textContent=m;
+  document.getElementById('swS').textContent=s;
+  document.getElementById('swMs').textContent=ms;
+}
+function swLap() {
+  const t = Date.now() - swStart2;
+  const s = Math.floor(t/1000%60).toString().padStart(2,'0');
+  const m = Math.floor(t/60000%60).toString().padStart(2,'0');
+  const h = Math.floor(t/3600000).toString().padStart(2,'0');
+  laps.push(`${h}:${m}:${s}`);
+  const list = document.getElementById('lapsList');
+  list.innerHTML = laps.map((l,i)=>`<div class="lap-item"><span>Lap ${i+1}</span><span>${l}</span></div>`).reverse().join('');
+}
+function swReset() {
+  clearInterval(swInterval);
+  swRunning=false; swElapsed=0; laps=[];
+  ['swH','swM','swS','swMs'].forEach((id,i)=>document.getElementById(id).textContent='00');
+  document.getElementById('swStartBtn').textContent='▶ Start';
+  document.getElementById('swLapBtn').disabled=true;
+  document.getElementById('lapsList').innerHTML='';
+}
+
+// ─────────────────────────────────────────────
+// TEXT TOOLS
+// ─────────────────────────────────────────────
+function analyzeText() {
+  const t = document.getElementById('textInput').value;
+  document.getElementById('statChars').textContent = t.length;
+  document.getElementById('statWords').textContent = t.trim() ? t.trim().split(/\s+/).length : 0;
+  document.getElementById('statLines').textContent = t ? t.split('\n').length : 0;
+  document.getElementById('statSentences').textContent = (t.match(/[.!?]+/g)||[]).length;
+  document.getElementById('statRead').textContent = Math.ceil((t.trim().split(/\s+/).filter(Boolean).length)/200);
+}
+function textTransform(type) {
+  const el = document.getElementById('textInput');
+  const t = el.value;
+  let result;
+  switch(type) {
+    case 'upper': result = t.toUpperCase(); break;
+    case 'lower': result = t.toLowerCase(); break;
+    case 'title': result = t.replace(/\w\S*/g, w => w[0].toUpperCase()+w.slice(1).toLowerCase()); break;
+    case 'camel': result = t.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g,(m,c)=>c.toUpperCase()); break;
+    case 'snake': result = t.toLowerCase().replace(/\s+/g,'_'); break;
+    case 'kebab': result = t.toLowerCase().replace(/\s+/g,'-'); break;
+    case 'reverse': result = t.split('').reverse().join(''); break;
+    case 'trim': result = t.replace(/\s+/g,' ').trim(); break;
+    default: result = t;
+  }
+  el.value = result;
+  analyzeText();
+  addHistory('Text Tools', type, result.slice(0,30)+(result.length>30?'...':''));
+}
+
+// ─────────────────────────────────────────────
+// AGE CALCULATOR
+// ─────────────────────────────────────────────
+document.getElementById('asofInput').value = new Date().toISOString().split('T')[0];
+function calcAge() {
+  const dob = new Date(document.getElementById('dobInput').value);
+  const asof = new Date(document.getElementById('asofInput').value);
+  if (!document.getElementById('dobInput').value) return;
+  let years = asof.getFullYear() - dob.getFullYear();
+  let months = asof.getMonth() - dob.getMonth();
+  let days = asof.getDate() - dob.getDate();
+  if (days < 0) { months--; days += new Date(asof.getFullYear(), asof.getMonth(), 0).getDate(); }
+  if (months < 0) { years--; months += 12; }
+  const totalDays = Math.floor((asof-dob)/86400000);
+  const nextBday = new Date(asof.getFullYear(), dob.getMonth(), dob.getDate());
+  if (nextBday < asof) nextBday.setFullYear(asof.getFullYear()+1);
+  const daysUntilBday = Math.ceil((nextBday-asof)/86400000);
+  document.getElementById('ageResult').style.display='block';
+  document.getElementById('ageYears').textContent = years;
+  document.getElementById('ageMonths').textContent = months;
+  document.getElementById('ageDays').textContent = days;
+  document.getElementById('ageExtra').innerHTML = `
+    Total days lived: <strong>${totalDays.toLocaleString()}</strong><br>
+    Total weeks: <strong>${Math.floor(totalDays/7).toLocaleString()}</strong><br>
+    Next birthday in: <strong>${daysUntilBday} days</strong>
+  `;
+  addHistory('Age Calc', dob.toLocaleDateString(), `${years}y ${months}m ${days}d`);
+}
+
+// ─────────────────────────────────────────────
+// NAV HOVER-SCROLL
+// ─────────────────────────────────────────────
+(function() {
+  const wrap = document.getElementById('navWrap');
+  let scrolling = null;
+  const SPEED = 6;
+  const ZONE = 120; // px from edge that triggers scroll
+
+  wrap.addEventListener('mousemove', e => {
+    const rect = wrap.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const w = rect.width;
+    clearInterval(scrolling);
+    if (x < ZONE) {
+      const intensity = 1 - x / ZONE;
+      scrolling = setInterval(() => wrap.scrollLeft -= SPEED * (1 + intensity * 2), 16);
+    } else if (x > w - ZONE) {
+      const intensity = (x - (w - ZONE)) / ZONE;
+      scrolling = setInterval(() => wrap.scrollLeft += SPEED * (1 + intensity * 2), 16);
+    }
+  });
+  wrap.addEventListener('mouseleave', () => clearInterval(scrolling));
+})();
+
+// ─────────────────────────────────────────────
+// CODE BLOCK
+// ─────────────────────────────────────────────
+const codeData = {
+  cpp: {
+    calc: {
+      file: 'calculator.cpp',
+      code: `<span class="cm">// ── Mini Calculator ── C++</span>
+<span class="kw">#include</span> <span class="st">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;stdexcept&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="tp">double</span> <span class="fn">calculate</span>(<span class="tp">double</span> a, <span class="tp">char</span> op, <span class="tp">double</span> b) {
+  <span class="kw">switch</span> (op) {
+    <span class="kw">case</span> <span class="st">'+'</span>: <span class="kw">return</span> a + b;
+    <span class="kw">case</span> <span class="st">'-'</span>: <span class="kw">return</span> a - b;
+    <span class="kw">case</span> <span class="st">'*'</span>: <span class="kw">return</span> a * b;
+    <span class="kw">case</span> <span class="st">'/'</span>:
+      <span class="kw">if</span> (b == <span class="nm">0</span>) <span class="kw">throw</span> runtime_error(<span class="st">"Division by zero"</span>);
+      <span class="kw">return</span> a / b;
+    <span class="kw">default</span>: <span class="kw">throw</span> invalid_argument(<span class="st">"Unknown operator"</span>);
+  }
+}
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+  <span class="tp">double</span> a, b;
+  <span class="tp">char</span> op;
+  cout &lt;&lt; <span class="st">"Enter expression (e.g. 5 + 3): "</span>;
+  cin &gt;&gt; a &gt;&gt; op &gt;&gt; b;
+  <span class="kw">try</span> {
+    cout &lt;&lt; <span class="st">"Result: "</span> &lt;&lt; <span class="fn">calculate</span>(a, op, b) &lt;&lt; endl;
+  } <span class="kw">catch</span> (<span class="kw">const</span> exception&amp; e) {
+    cerr &lt;&lt; <span class="st">"Error: "</span> &lt;&lt; e.<span class="fn">what</span>() &lt;&lt; endl;
+  }
+  <span class="kw">return</span> <span class="nm">0</span>;
+}`
+    },
+    sci: {
+      file: 'scientific.cpp',
+      code: `<span class="cm">// ── Scientific Calculator ── C++</span>
+<span class="kw">#include</span> <span class="st">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;cmath&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;string&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="kw">const</span> <span class="tp">double</span> PI = M_PI;
+<span class="kw">const</span> <span class="tp">double</span> DEG = PI / <span class="nm">180.0</span>;
+
+<span class="tp">double</span> <span class="fn">sciCalc</span>(<span class="kw">const</span> string&amp; fn, <span class="tp">double</span> x, <span class="tp">bool</span> deg = <span class="kw">true</span>) {
+  <span class="tp">double</span> v = deg ? x * DEG : x;
+  <span class="kw">if</span>      (fn == <span class="st">"sin"</span>)  <span class="kw">return</span> <span class="fn">sin</span>(v);
+  <span class="kw">else if</span> (fn == <span class="st">"cos"</span>)  <span class="kw">return</span> <span class="fn">cos</span>(v);
+  <span class="kw">else if</span> (fn == <span class="st">"tan"</span>)  <span class="kw">return</span> <span class="fn">tan</span>(v);
+  <span class="kw">else if</span> (fn == <span class="st">"log"</span>)  <span class="kw">return</span> <span class="fn">log10</span>(x);
+  <span class="kw">else if</span> (fn == <span class="st">"ln"</span>)   <span class="kw">return</span> <span class="fn">log</span>(x);
+  <span class="kw">else if</span> (fn == <span class="st">"sqrt"</span>) <span class="kw">return</span> <span class="fn">sqrt</span>(x);
+  <span class="kw">else if</span> (fn == <span class="st">"abs"</span>)  <span class="kw">return</span> <span class="fn">fabs</span>(x);
+  <span class="kw">throw</span> invalid_argument(<span class="st">"Unknown function: "</span> + fn);
+}
+
+<span class="tp">long long</span> <span class="fn">factorial</span>(<span class="tp">int</span> n) {
+  <span class="kw">if</span> (n &lt;= <span class="nm">1</span>) <span class="kw">return</span> <span class="nm">1</span>;
+  <span class="kw">return</span> n * <span class="fn">factorial</span>(n - <span class="nm">1</span>);
+}
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+  string fn; <span class="tp">double</span> x;
+  cout &lt;&lt; <span class="st">"Function (sin/cos/tan/log/sqrt): "</span>; cin &gt;&gt; fn;
+  cout &lt;&lt; <span class="st">"Value: "</span>; cin &gt;&gt; x;
+  cout &lt;&lt; fn &lt;&lt; <span class="st">"("</span> &lt;&lt; x &lt;&lt; <span class="st">") = "</span> &lt;&lt; <span class="fn">sciCalc</span>(fn, x) &lt;&lt; endl;
+  <span class="kw">return</span> <span class="nm">0</span>;
+}`
+    },
+    unit: {
+      file: 'unit_converter.cpp',
+      code: `<span class="cm">// ── Unit Converter ── C++</span>
+<span class="kw">#include</span> <span class="st">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;map&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;string&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="cm">// Base unit: meter for length</span>
+map&lt;string, <span class="tp">double</span>&gt; lengthToMeter = {
+  {<span class="st">"m"</span>, <span class="nm">1.0</span>},    {<span class="st">"km"</span>, <span class="nm">1000.0</span>},
+  {<span class="st">"cm"</span>, <span class="nm">0.01</span>},  {<span class="st">"mm"</span>, <span class="nm">0.001</span>},
+  {<span class="st">"mi"</span>, <span class="nm">1609.34</span>},{<span class="st">"ft"</span>, <span class="nm">0.3048</span>},
+  {<span class="st">"in"</span>, <span class="nm">0.0254</span>}
+};
+
+<span class="tp">double</span> <span class="fn">convertLength</span>(<span class="tp">double</span> val,
+    <span class="kw">const</span> string&amp; from, <span class="kw">const</span> string&amp; to) {
+  <span class="kw">return</span> val * lengthToMeter[from] / lengthToMeter[to];
+}
+
+<span class="cm">// Temperature conversion</span>
+<span class="tp">double</span> <span class="fn">convertTemp</span>(<span class="tp">double</span> val,
+    <span class="kw">const</span> string&amp; from, <span class="kw">const</span> string&amp; to) {
+  <span class="tp">double</span> c;
+  <span class="kw">if</span>      (from == <span class="st">"C"</span>) c = val;
+  <span class="kw">else if</span> (from == <span class="st">"F"</span>) c = (val - <span class="nm">32</span>) * <span class="nm">5.0</span> / <span class="nm">9.0</span>;
+  <span class="kw">else</span>                  c = val - <span class="nm">273.15</span>;
+  <span class="kw">if</span>      (to == <span class="st">"C"</span>) <span class="kw">return</span> c;
+  <span class="kw">else if</span> (to == <span class="st">"F"</span>) <span class="kw">return</span> c * <span class="nm">9.0</span> / <span class="nm">5.0</span> + <span class="nm">32</span>;
+  <span class="kw">else</span>                 <span class="kw">return</span> c + <span class="nm">273.15</span>;
+}
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+  <span class="tp">double</span> val = <span class="nm">100</span>;
+  cout &lt;&lt; val &lt;&lt; <span class="st">" cm = "</span>
+       &lt;&lt; <span class="fn">convertLength</span>(val, <span class="st">"cm"</span>, <span class="st">"in"</span>) &lt;&lt; <span class="st">" in"</span> &lt;&lt; endl;
+  cout &lt;&lt; <span class="st">"100 C = "</span>
+       &lt;&lt; <span class="fn">convertTemp</span>(<span class="nm">100</span>, <span class="st">"C"</span>, <span class="st">"F"</span>) &lt;&lt; <span class="st">" F"</span> &lt;&lt; endl;
+  <span class="kw">return</span> <span class="nm">0</span>;
+}`
+    },
+    pass: {
+      file: 'password_gen.cpp',
+      code: `<span class="cm">// ── Password Generator ── C++</span>
+<span class="kw">#include</span> <span class="st">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;string&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;random&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;algorithm&gt;</span>
+<span class="kw">using namespace</span> std;
+
+string <span class="fn">generatePassword</span>(
+    <span class="tp">int</span> len,
+    <span class="tp">bool</span> upper, <span class="tp">bool</span> lower,
+    <span class="tp">bool</span> digits, <span class="tp">bool</span> symbols) {
+
+  string pool = <span class="st">""</span>;
+  <span class="kw">if</span> (upper)   pool += <span class="st">"ABCDEFGHIJKLMNOPQRSTUVWXYZ"</span>;
+  <span class="kw">if</span> (lower)   pool += <span class="st">"abcdefghijklmnopqrstuvwxyz"</span>;
+  <span class="kw">if</span> (digits)  pool += <span class="st">"0123456789"</span>;
+  <span class="kw">if</span> (symbols) pool += <span class="st">"!@#$%^&amp;*()_+-=[]{}|;:,."</span>;
+  <span class="kw">if</span> (pool.empty()) <span class="kw">return</span> <span class="st">""</span>;
+
+  random_device rd;
+  mt19937 rng(rd());
+  uniform_int_distribution&lt;<span class="tp">int</span>&gt; dist(<span class="nm">0</span>, pool.size() - <span class="nm">1</span>);
+
+  string pass(len, <span class="st">' '</span>);
+  <span class="fn">generate</span>(pass.<span class="fn">begin</span>(), pass.<span class="fn">end</span>(),
+    [&amp;]() { <span class="kw">return</span> pool[<span class="fn">dist</span>(rng)]; });
+  <span class="kw">return</span> pass;
+}
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+  cout &lt;&lt; <span class="fn">generatePassword</span>(<span class="nm">16</span>, <span class="kw">true</span>, <span class="kw">true</span>, <span class="kw">true</span>, <span class="kw">true</span>) &lt;&lt; endl;
+  <span class="kw">return</span> <span class="nm">0</span>;
+}`
+    },
+    base: {
+      file: 'base_converter.cpp',
+      code: `<span class="cm">// ── Base Converter ── C++</span>
+<span class="kw">#include</span> <span class="st">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;string&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;stdexcept&gt;</span>
+<span class="kw">using namespace</span> std;
+
+string <span class="fn">toBase</span>(<span class="tp">long long</span> n, <span class="tp">int</span> base) {
+  <span class="kw">if</span> (n == <span class="nm">0</span>) <span class="kw">return</span> <span class="st">"0"</span>;
+  <span class="kw">const</span> string digits = <span class="st">"0123456789ABCDEF"</span>;
+  string result;
+  <span class="tp">bool</span> neg = n &lt; <span class="nm">0</span>;
+  <span class="kw">if</span> (neg) n = -n;
+  <span class="kw">while</span> (n &gt; <span class="nm">0</span>) {
+    result = digits[n % base] + result;
+    n /= base;
+  }
+  <span class="kw">return</span> neg ? <span class="st">"-"</span> + result : result;
+}
+
+<span class="tp">long long</span> <span class="fn">fromBase</span>(<span class="kw">const</span> string&amp; s, <span class="tp">int</span> base) {
+  <span class="kw">return</span> <span class="fn">stoll</span>(s, <span class="kw">nullptr</span>, base);
+}
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+  string input = <span class="st">"1010"</span>; <span class="tp">int</span> fromB = <span class="nm">2</span>;
+  <span class="tp">long long</span> dec = <span class="fn">fromBase</span>(input, fromB);
+
+  cout &lt;&lt; <span class="st">"Binary:  "</span> &lt;&lt; <span class="fn">toBase</span>(dec, <span class="nm">2</span>)  &lt;&lt; endl;
+  cout &lt;&lt; <span class="st">"Octal:   "</span> &lt;&lt; <span class="fn">toBase</span>(dec, <span class="nm">8</span>)  &lt;&lt; endl;
+  cout &lt;&lt; <span class="st">"Decimal: "</span> &lt;&lt; dec              &lt;&lt; endl;
+  cout &lt;&lt; <span class="st">"Hex:     "</span> &lt;&lt; <span class="fn">toBase</span>(dec, <span class="nm">16</span>) &lt;&lt; endl;
+  <span class="kw">return</span> <span class="nm">0</span>;
+}`
+    },
+    bmi: {
+      file: 'bmi_calculator.cpp',
+      code: `<span class="cm">// ── BMI Calculator ── C++</span>
+<span class="kw">#include</span> <span class="st">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;string&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="kw">struct</span> <span class="tp">BMIResult</span> {
+  <span class="tp">double</span> bmi;
+  string category;
+};
+
+<span class="tp">BMIResult</span> <span class="fn">calcBMI</span>(<span class="tp">double</span> kg, <span class="tp">double</span> cm) {
+  <span class="tp">double</span> h = cm / <span class="nm">100.0</span>;
+  <span class="tp">double</span> b = kg / (h * h);
+  string cat;
+  <span class="kw">if</span>      (b &lt; <span class="nm">18.5</span>) cat = <span class="st">"Underweight"</span>;
+  <span class="kw">else if</span> (b &lt; <span class="nm">25.0</span>) cat = <span class="st">"Normal weight"</span>;
+  <span class="kw">else if</span> (b &lt; <span class="nm">30.0</span>) cat = <span class="st">"Overweight"</span>;
+  <span class="kw">else</span>               cat = <span class="st">"Obese"</span>;
+  <span class="kw">return</span> {b, cat};
+}
+
+<span class="cm">// Imperial overload</span>
+<span class="tp">BMIResult</span> <span class="fn">calcBMI_imperial</span>(<span class="tp">double</span> lbs, <span class="tp">double</span> inches) {
+  <span class="kw">return</span> <span class="fn">calcBMI</span>(lbs * <span class="nm">0.453592</span>, inches * <span class="nm">2.54</span>);
+}
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+  <span class="tp">auto</span> r = <span class="fn">calcBMI</span>(<span class="nm">70</span>, <span class="nm">175</span>);
+  cout &lt;&lt; <span class="st">"BMI: "</span>      &lt;&lt; r.bmi      &lt;&lt; endl;
+  cout &lt;&lt; <span class="st">"Category: "</span> &lt;&lt; r.category &lt;&lt; endl;
+  <span class="kw">return</span> <span class="nm">0</span>;
+}`
+    },
+    age: {
+      file: 'age_calculator.cpp',
+      code: `<span class="cm">// ── Age Calculator ── C++</span>
+<span class="kw">#include</span> <span class="st">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="st">&lt;ctime&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="kw">struct</span> <span class="tp">Date</span> { <span class="tp">int</span> y, m, d; };
+
+<span class="kw">struct</span> <span class="tp">Age</span>  { <span class="tp">int</span> years, months, days; };
+
+<span class="tp">Age</span> <span class="fn">calcAge</span>(<span class="tp">Date</span> dob, <span class="tp">Date</span> today) {
+  <span class="tp">int</span> y = today.y - dob.y;
+  <span class="tp">int</span> m = today.m - dob.m;
+  <span class="tp">int</span> d = today.d - dob.d;
+  <span class="kw">if</span> (d &lt; <span class="nm">0</span>) { m--; d += <span class="nm">30</span>; }
+  <span class="kw">if</span> (m &lt; <span class="nm">0</span>) { y--; m += <span class="nm">12</span>; }
+  <span class="kw">return</span> {y, m, d};
+}
+
+<span class="tp">Date</span> <span class="fn">today</span>() {
+  time_t t = <span class="fn">time</span>(<span class="kw">nullptr</span>);
+  tm* now = <span class="fn">localtime</span>(&amp;t);
+  <span class="kw">return</span> {now->tm_year + <span class="nm">1900</span>,
+          now->tm_mon  + <span class="nm">1</span>,
+          now->tm_mday};
+}
+
+<span class="tp">int</span> <span class="fn">main</span>() {
+  <span class="tp">Date</span> dob = {<span class="nm">2000</span>, <span class="nm">6</span>, <span class="nm">15</span>};
+  <span class="tp">Age</span>  age = <span class="fn">calcAge</span>(dob, <span class="fn">today</span>());
+  cout &lt;&lt; age.years  &lt;&lt; <span class="st">" years, "</span>
+       &lt;&lt; age.months &lt;&lt; <span class="st">" months, "</span>
+       &lt;&lt; age.days   &lt;&lt; <span class="st">" days"</span>   &lt;&lt; endl;
+  <span class="kw">return</span> <span class="nm">0</span>;
+}`
+    }
+  },
+  py: {
+    calc: {
+      file: 'calculator.py',
+      code: `<span class="cm"># ── Mini Calculator ── Python</span>
+
+<span class="kw">def</span> <span class="fn">calculate</span>(a: <span class="tp">float</span>, op: <span class="tp">str</span>, b: <span class="tp">float</span>) -> <span class="tp">float</span>:
+    ops = {
+        <span class="st">'+'</span>: <span class="kw">lambda</span> x, y: x + y,
+        <span class="st">'-'</span>: <span class="kw">lambda</span> x, y: x - y,
+        <span class="st">'*'</span>: <span class="kw">lambda</span> x, y: x * y,
+        <span class="st">'/'</span>: <span class="kw">lambda</span> x, y: x / y <span class="kw">if</span> y != <span class="nm">0</span> <span class="kw">else</span> (_ <span class="kw">for</span> _ <span class="kw">in</span> ()).<span class="fn">throw</span>(
+            ZeroDivisionError(<span class="st">"Cannot divide by zero"</span>))
+    }
+    <span class="kw">if</span> op <span class="kw">not in</span> ops:
+        <span class="kw">raise</span> ValueError(<span class="fn">f</span><span class="st">"Unknown operator: {op}"</span>)
+    <span class="kw">return</span> ops[op](a, b)
+
+<span class="kw">def</span> <span class="fn">repl</span>():
+    <span class="kw">while</span> <span class="kw">True</span>:
+        expr = <span class="fn">input</span>(<span class="st">"&gt; "</span>).<span class="fn">split</span>()
+        <span class="kw">try</span>:
+            a, op, b = <span class="tp">float</span>(expr[<span class="nm">0</span>]), expr[<span class="nm">1</span>], <span class="tp">float</span>(expr[<span class="nm">2</span>])
+            <span class="fn">print</span>(<span class="fn">f</span><span class="st">"= {calculate(a, op, b)}"</span>)
+        <span class="kw">except</span> Exception <span class="kw">as</span> e:
+            <span class="fn">print</span>(<span class="fn">f</span><span class="st">"Error: {e}"</span>)
+
+<span class="kw">if</span> __name__ == <span class="st">"__main__"</span>:
+    <span class="fn">repl</span>()`
+    },
+    sci: {
+      file: 'scientific.py',
+      code: `<span class="cm"># ── Scientific Calculator ── Python</span>
+<span class="kw">import</span> math
+
+<span class="kw">def</span> <span class="fn">sci_calc</span>(fn: <span class="tp">str</span>, x: <span class="tp">float</span>, deg: <span class="tp">bool</span> = <span class="kw">True</span>) -> <span class="tp">float</span>:
+    v = math.<span class="fn">radians</span>(x) <span class="kw">if</span> deg <span class="kw">else</span> x
+    funcs = {
+        <span class="st">"sin"</span> : <span class="kw">lambda</span>: math.<span class="fn">sin</span>(v),
+        <span class="st">"cos"</span> : <span class="kw">lambda</span>: math.<span class="fn">cos</span>(v),
+        <span class="st">"tan"</span> : <span class="kw">lambda</span>: math.<span class="fn">tan</span>(v),
+        <span class="st">"log"</span> : <span class="kw">lambda</span>: math.<span class="fn">log10</span>(x),
+        <span class="st">"ln"</span>  : <span class="kw">lambda</span>: math.<span class="fn">log</span>(x),
+        <span class="st">"sqrt"</span>: <span class="kw">lambda</span>: math.<span class="fn">sqrt</span>(x),
+        <span class="st">"abs"</span> : <span class="kw">lambda</span>: <span class="fn">abs</span>(x),
+    }
+    <span class="kw">if</span> fn <span class="kw">not in</span> funcs:
+        <span class="kw">raise</span> ValueError(<span class="fn">f</span><span class="st">"Unknown function: {fn}"</span>)
+    <span class="kw">return</span> funcs[fn]()
+
+<span class="kw">def</span> <span class="fn">factorial</span>(n: <span class="tp">int</span>) -> <span class="tp">int</span>:
+    <span class="kw">return</span> math.<span class="fn">factorial</span>(n)
+
+<span class="kw">if</span> __name__ == <span class="st">"__main__"</span>:
+    <span class="fn">print</span>(<span class="fn">sci_calc</span>(<span class="st">"sin"</span>, <span class="nm">30</span>))   <span class="cm"># 0.5</span>
+    <span class="fn">print</span>(<span class="fn">sci_calc</span>(<span class="st">"sqrt"</span>, <span class="nm">144</span>)) <span class="cm"># 12.0</span>
+    <span class="fn">print</span>(<span class="fn">factorial</span>(<span class="nm">6</span>))          <span class="cm"># 720</span>`
+    },
+    unit: {
+      file: 'unit_converter.py',
+      code: `<span class="cm"># ── Unit Converter ── Python</span>
+
+LENGTH = {
+    <span class="st">"m"</span>: <span class="nm">1.0</span>, <span class="st">"km"</span>: <span class="nm">1000</span>, <span class="st">"cm"</span>: <span class="nm">0.01</span>,
+    <span class="st">"mm"</span>: <span class="nm">0.001</span>, <span class="st">"mi"</span>: <span class="nm">1609.34</span>, <span class="st">"ft"</span>: <span class="nm">0.3048</span>, <span class="st">"in"</span>: <span class="nm">0.0254</span>
+}
+WEIGHT = {
+    <span class="st">"kg"</span>: <span class="nm">1.0</span>, <span class="st">"g"</span>: <span class="nm">0.001</span>, <span class="st">"lb"</span>: <span class="nm">0.453592</span>, <span class="st">"oz"</span>: <span class="nm">0.0283495</span>
+}
+
+<span class="kw">def</span> <span class="fn">convert</span>(val: <span class="tp">float</span>, frm: <span class="tp">str</span>,
+             to: <span class="tp">str</span>, table: <span class="tp">dict</span>) -> <span class="tp">float</span>:
+    <span class="kw">return</span> val * table[frm] / table[to]
+
+<span class="kw">def</span> <span class="fn">convert_temp</span>(val: <span class="tp">float</span>, frm: <span class="tp">str</span>, to: <span class="tp">str</span>) -> <span class="tp">float</span>:
+    celsius = {
+        <span class="st">"C"</span>: val,
+        <span class="st">"F"</span>: (val - <span class="nm">32</span>) * <span class="nm">5</span> / <span class="nm">9</span>,
+        <span class="st">"K"</span>: val - <span class="nm">273.15</span>
+    }[frm]
+    <span class="kw">return</span> {
+        <span class="st">"C"</span>: celsius,
+        <span class="st">"F"</span>: celsius * <span class="nm">9</span> / <span class="nm">5</span> + <span class="nm">32</span>,
+        <span class="st">"K"</span>: celsius + <span class="nm">273.15</span>
+    }[to]
+
+<span class="kw">if</span> __name__ == <span class="st">"__main__"</span>:
+    <span class="fn">print</span>(<span class="fn">convert</span>(<span class="nm">100</span>, <span class="st">"cm"</span>, <span class="st">"in"</span>, LENGTH))  <span class="cm"># 39.37</span>
+    <span class="fn">print</span>(<span class="fn">convert_temp</span>(<span class="nm">100</span>, <span class="st">"C"</span>, <span class="st">"F"</span>))       <span class="cm"># 212.0</span>`
+    },
+    pass: {
+      file: 'password_gen.py',
+      code: `<span class="cm"># ── Password Generator ── Python</span>
+<span class="kw">import</span> secrets
+<span class="kw">import</span> string
+
+<span class="kw">def</span> <span class="fn">generate_password</span>(
+    length: <span class="tp">int</span> = <span class="nm">16</span>,
+    upper: <span class="tp">bool</span> = <span class="kw">True</span>,
+    lower: <span class="tp">bool</span> = <span class="kw">True</span>,
+    digits: <span class="tp">bool</span> = <span class="kw">True</span>,
+    symbols: <span class="tp">bool</span> = <span class="kw">False</span>
+) -> <span class="tp">str</span>:
+    pool = <span class="st">""</span>
+    <span class="kw">if</span> upper:   pool += string.ascii_uppercase
+    <span class="kw">if</span> lower:   pool += string.ascii_lowercase
+    <span class="kw">if</span> digits:  pool += string.digits
+    <span class="kw">if</span> symbols: pool += string.punctuation
+    <span class="kw">if not</span> pool:
+        <span class="kw">raise</span> ValueError(<span class="st">"Select at least one character set"</span>)
+    <span class="kw">return</span> <span class="st">""</span>.<span class="fn">join</span>(secrets.<span class="fn">choice</span>(pool) <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(length))
+
+<span class="kw">def</span> <span class="fn">password_strength</span>(pwd: <span class="tp">str</span>) -> <span class="tp">str</span>:
+    score = <span class="fn">sum</span>([
+        <span class="fn">len</span>(pwd) >= <span class="nm">12</span>, <span class="fn">len</span>(pwd) >= <span class="nm">20</span>,
+        <span class="fn">any</span>(c.isupper() <span class="kw">for</span> c <span class="kw">in</span> pwd),
+        <span class="fn">any</span>(c.isdigit() <span class="kw">for</span> c <span class="kw">in</span> pwd),
+        <span class="fn">any</span>(c <span class="kw">in</span> string.punctuation <span class="kw">for</span> c <span class="kw">in</span> pwd),
+    ])
+    <span class="kw">return</span> [<span class="st">"Weak"</span>,<span class="st">"Fair"</span>,<span class="st">"Good"</span>,<span class="st">"Strong"</span>,<span class="st">"Very Strong"</span>][score]
+
+<span class="kw">if</span> __name__ == <span class="st">"__main__"</span>:
+    pwd = <span class="fn">generate_password</span>(<span class="nm">20</span>, symbols=<span class="kw">True</span>)
+    <span class="fn">print</span>(pwd, <span class="st">"→"</span>, <span class="fn">password_strength</span>(pwd))`
+    },
+    base: {
+      file: 'base_converter.py',
+      code: `<span class="cm"># ── Base Converter ── Python</span>
+
+<span class="kw">def</span> <span class="fn">convert_base</span>(value: <span class="tp">str</span>, from_base: <span class="tp">int</span>) -> <span class="tp">dict</span>:
+    dec = <span class="fn">int</span>(value, from_base)
+    <span class="kw">return</span> {
+        <span class="st">"binary"</span> : <span class="fn">bin</span>(dec)[<span class="nm">2</span>:],
+        <span class="st">"octal"</span>  : <span class="fn">oct</span>(dec)[<span class="nm">2</span>:],
+        <span class="st">"decimal"</span>: <span class="tp">str</span>(dec),
+        <span class="st">"hex"</span>    : <span class="fn">hex</span>(dec)[<span class="nm">2</span>:].<span class="fn">upper</span>(),
+    }
+
+<span class="kw">def</span> <span class="fn">to_base_n</span>(n: <span class="tp">int</span>, base: <span class="tp">int</span>) -> <span class="tp">str</span>:
+    <span class="st">"""Convert decimal integer to any base (2–36)"""</span>
+    <span class="kw">if</span> n == <span class="nm">0</span>: <span class="kw">return</span> <span class="st">"0"</span>
+    digits = <span class="st">"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"</span>
+    result, neg = <span class="st">""</span>, n < <span class="nm">0</span>
+    n = <span class="fn">abs</span>(n)
+    <span class="kw">while</span> n:
+        result = digits[n % base] + result
+        n //= base
+    <span class="kw">return</span> (<span class="st">"-"</span> <span class="kw">if</span> neg <span class="kw">else</span> <span class="st">""</span>) + result
+
+<span class="kw">if</span> __name__ == <span class="st">"__main__"</span>:
+    r = <span class="fn">convert_base</span>(<span class="st">"1010"</span>, <span class="nm">2</span>)
+    <span class="kw">for</span> k, v <span class="kw">in</span> r.<span class="fn">items</span>():
+        <span class="fn">print</span>(<span class="fn">f</span><span class="st">"{k:&lt;10} {v}"</span>)`
+    },
+    bmi: {
+      file: 'bmi_calculator.py',
+      code: `<span class="cm"># ── BMI Calculator ── Python</span>
+<span class="kw">from</span> dataclasses <span class="kw">import</span> dataclass
+
+@dataclass
+<span class="kw">class</span> <span class="tp">BMIResult</span>:
+    bmi: <span class="tp">float</span>
+    category: <span class="tp">str</span>
+    healthy_range: <span class="tp">str</span> = <span class="st">"18.5 – 24.9"</span>
+
+<span class="kw">def</span> <span class="fn">calc_bmi</span>(weight_kg: <span class="tp">float</span>, height_cm: <span class="tp">float</span>) -> <span class="tp">BMIResult</span>:
+    h = height_cm / <span class="nm">100</span>
+    bmi = <span class="fn">round</span>(weight_kg / h**<span class="nm">2</span>, <span class="nm">1</span>)
+    <span class="kw">if</span>   bmi &lt; <span class="nm">18.5</span>: cat = <span class="st">"Underweight"</span>
+    <span class="kw">elif</span> bmi &lt; <span class="nm">25.0</span>: cat = <span class="st">"Normal weight"</span>
+    <span class="kw">elif</span> bmi &lt; <span class="nm">30.0</span>: cat = <span class="st">"Overweight"</span>
+    <span class="kw">else</span>:            cat = <span class="st">"Obese"</span>
+    <span class="kw">return</span> <span class="tp">BMIResult</span>(bmi, cat)
+
+<span class="kw">def</span> <span class="fn">calc_bmi_imperial</span>(lbs: <span class="tp">float</span>, inches: <span class="tp">float</span>) -> <span class="tp">BMIResult</span>:
+    <span class="kw">return</span> <span class="fn">calc_bmi</span>(lbs * <span class="nm">0.453592</span>, inches * <span class="nm">2.54</span>)
+
+<span class="kw">if</span> __name__ == <span class="st">"__main__"</span>:
+    r = <span class="fn">calc_bmi</span>(<span class="nm">70</span>, <span class="nm">175</span>)
+    <span class="fn">print</span>(<span class="fn">f</span><span class="st">"BMI: {r.bmi} ({r.category})"</span>)`
+    },
+    age: {
+      file: 'age_calculator.py',
+      code: `<span class="cm"># ── Age Calculator ── Python</span>
+<span class="kw">from</span> datetime <span class="kw">import</span> date
+<span class="kw">from</span> dataclasses <span class="kw">import</span> dataclass
+
+@dataclass
+<span class="kw">class</span> <span class="tp">AgeResult</span>:
+    years: <span class="tp">int</span>
+    months: <span class="tp">int</span>
+    days: <span class="tp">int</span>
+    total_days: <span class="tp">int</span>
+
+<span class="kw">def</span> <span class="fn">calc_age</span>(dob: date, asof: date = <span class="kw">None</span>) -> <span class="tp">AgeResult</span>:
+    asof = asof <span class="kw">or</span> date.<span class="fn">today</span>()
+    years  = asof.year  - dob.year
+    months = asof.month - dob.month
+    days   = asof.day   - dob.day
+    <span class="kw">if</span> days &lt; <span class="nm">0</span>:
+        months -= <span class="nm">1</span>
+        days   += (date(asof.year, asof.month, <span class="nm">1</span>) -
+                   date(asof.year, asof.month - <span class="nm">1</span> <span class="kw">or</span> <span class="nm">12</span>, <span class="nm">1</span>)).days
+    <span class="kw">if</span> months &lt; <span class="nm">0</span>:
+        years -= <span class="nm">1</span>; months += <span class="nm">12</span>
+    total = (asof - dob).days
+    <span class="kw">return</span> <span class="tp">AgeResult</span>(years, months, days, total)
+
+<span class="kw">def</span> <span class="fn">next_birthday</span>(dob: date) -> <span class="tp">int</span>:
+    today = date.<span class="fn">today</span>()
+    bday  = date(today.year, dob.month, dob.day)
+    <span class="kw">if</span> bday &lt; today:
+        bday = date(today.year + <span class="nm">1</span>, dob.month, dob.day)
+    <span class="kw">return</span> (bday - today).days
+
+<span class="kw">if</span> __name__ == <span class="st">"__main__"</span>:
+    r = <span class="fn">calc_age</span>(date(<span class="nm">2000</span>, <span class="nm">6</span>, <span class="nm">15</span>))
+    <span class="fn">print</span>(<span class="fn">f</span><span class="st">"{r.years}y {r.months}m {r.days}d ({r.total_days} days total)"</span>)
+    <span class="fn">print</span>(<span class="fn">f</span><span class="st">"Next birthday in {next_birthday(date(2000,6,15))} days"</span>)`
+    }
+  }
+};
+
+let currentLang = 'cpp', currentTool = 'calc';
+
+function switchLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.clang-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('clang-' + lang).classList.add('active');
+  renderCode();
+}
+function switchCode(tool) {
+  currentTool = tool;
+  document.querySelectorAll('.ctool-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('ct-' + tool).classList.add('active');
+  renderCode();
+}
+function renderCode() {
+  const d = codeData[currentLang][currentTool];
+  if (!d) return;
+  document.getElementById('codeFilename').textContent = d.file;
+  document.getElementById('codeContent').innerHTML = d.code;
+}
+function copyCode() {
+  const text = document.getElementById('codeContent').textContent;
+  navigator.clipboard.writeText(text).catch(()=>{});
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+// Init code block
+renderCode();
+
+// Init history
+renderHistory();
+</script>
+</body>
+</html>
