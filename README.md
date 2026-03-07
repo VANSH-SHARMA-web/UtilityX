@@ -22,4 +22,4 @@ No frameworks. No dependencies. Just tools that work.
 - Fully responsive
   
 ## 🚀 Live
-https://utilitytoolx.netlify.app
+[https://utilitytoolx.netlify.app](https://utilityx.pages.dev/)
