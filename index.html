@@ -1085,11 +1085,11 @@
       <div class="row">
         <div style="flex:1">
           <div class="field-label">Date of Birth</div>
-          <input type="date" id="dobInput" style="width:100%">
+          <input type="text" id="dobInput" placeholder="DD/MM/YYYY" maxlength="10" oninput="formatDateInput(this)" style="width:100%">
         </div>
         <div style="flex:1">
           <div class="field-label">As of Date</div>
-          <input type="date" id="asofInput" style="width:100%">
+          <input type="text" id="asofInput" placeholder="DD/MM/YYYY" maxlength="10" oninput="formatDateInput(this)" style="width:100%">
         </div>
       </div>
       <button class="btn btn-primary" onclick="calcAge()">Calculate Age</button>
@@ -1585,11 +1585,29 @@ function textTransform(type) {
 // ─────────────────────────────────────────────
 // AGE CALCULATOR
 // ─────────────────────────────────────────────
-document.getElementById('asofInput').value = new Date().toISOString().split('T')[0];
+const _t = new Date();
+document.getElementById('asofInput').value =
+  String(_t.getDate()).padStart(2,'0') + '/' +
+  String(_t.getMonth()+1).padStart(2,'0') + '/' +
+  _t.getFullYear();
+
+function formatDateInput(el) {
+  let v = el.value.replace(/\D/g,'');
+  if (v.length > 2) v = v.slice(0,2) + '/' + v.slice(2);
+  if (v.length > 5) v = v.slice(0,5) + '/' + v.slice(5,9);
+  el.value = v;
+}
+
+function parseDMY(s) {
+  const p = s.split('/');
+  if (p.length !== 3 || p[2].length !== 4) return null;
+  const d = new Date(+p[2], +p[1]-1, +p[0]);
+  return isNaN(d) ? null : d;
+}
 function calcAge() {
-  const dob = new Date(document.getElementById('dobInput').value);
-  const asof = new Date(document.getElementById('asofInput').value);
-  if (!document.getElementById('dobInput').value) return;
+  const dob  = parseDMY(document.getElementById('dobInput').value);
+  const asof = parseDMY(document.getElementById('asofInput').value);
+  if (!dob || !asof) return;
   let years = asof.getFullYear() - dob.getFullYear();
   let months = asof.getMonth() - dob.getMonth();
   let days = asof.getDate() - dob.getDate();
